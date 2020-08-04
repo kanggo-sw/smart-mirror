@@ -6,19 +6,21 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from bs4 import BeautifulSoup
 
 
-
 class MainWindow(QtWidgets.QMainWindow):
-
     def __init__(self):
         super().__init__()
 
-        if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
+        if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
             # noinspection PyArgumentList
-            QtWidgets.QApplication.instance().setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+            QtWidgets.QApplication.instance().setAttribute(
+                QtCore.Qt.AA_EnableHighDpiScaling
+            )
 
-        if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
+        if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
             # noinspection PyArgumentList
-            QtWidgets.QApplication.instance().setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
+            QtWidgets.QApplication.instance().setAttribute(
+                QtCore.Qt.AA_UseHighDpiPixmaps
+            )
 
         self.setStyleSheet("background-color: black")
 
@@ -30,7 +32,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.right_container = QtWidgets.QWidget()
         self.right_container_layout = QtWidgets.QVBoxLayout()
-        self.right_container_layout.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignRight)
+        self.right_container_layout.setAlignment(
+            QtCore.Qt.AlignTop | QtCore.Qt.AlignRight
+        )
 
         # Create widgets
         self.left_container_layout.addWidget(self.clock())
@@ -91,30 +95,16 @@ class MainWindow(QtWidgets.QMainWindow):
         current_date = QtCore.QDate.currentDate()
 
         # converting QTime object to string
-        label_time = current_time.toString('hh:mm')
-        label2_time = current_date.toString('dddd, MMMM d')
+        label_time = current_time.toString("hh:mm")
+        label2_time = current_date.toString("dddd, MMMM d일")
 
         # showing it to the label
         label.setText(label_time)
 
         l2.setText(label2_time)
 
-    @staticmethod
-    def weather() -> QtWidgets.QWidget:
-        # TODO: Update
-        _key = "b7dfdf88e34dc2fb2dea1945c4010f09"
-
-        owm = pyowm.OWM(_key)
-
-        weather = owm.weather_manager().weather_at_place("ChunCheon")
-
-        # status = str(weather.to_dict()["weather"]["status"])
-        temperature = float(weather.to_dict()["weather"]["temperature"]["temp"]) - 273.15
-        temperature = int(temperature)
-
-        web_icon = "http://openweathermap.org/img/wn/" + weather.to_dict()["weather"]["weather_icon_name"] + "@4x.png"
+    def weather(self) -> QtWidgets.QWidget:
         icon = QtGui.QPixmap()
-        icon.loadFromData(urllib.request.urlopen(web_icon).read())
         icon = icon.scaled(128, 128)
 
         icon_label = QtWidgets.QLabel()
@@ -122,7 +112,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # print(web_icon)
         icon_label.setStyleSheet("color: white")
 
-        temp_label = QtWidgets.QLabel(str(temperature) + "°C")
+        temp_label = QtWidgets.QLabel('str(temperature) + "°C"')
         temp_label.setStyleSheet("color: white")
 
         lay = QtWidgets.QHBoxLayout()
@@ -134,20 +124,65 @@ class MainWindow(QtWidgets.QMainWindow):
 
         p.setLayout(lay)
 
+        self.update_weather(icon_label, temp_label, icon)
+
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(lambda: self.update_weather(icon_label, temp_label, icon))
+        timer.start(60000)
+
         return p
 
     @staticmethod
-    def meal() -> QtWidgets.QWidget:
-        html: bytes = urllib.request.urlopen("http://kanggo.net/main.do").read()
-        soup = BeautifulSoup(html.decode(), 'lxml')
+    def update_weather(
+        icon_label: QtWidgets.QLabel, temp_label: QtWidgets.QLabel, icon: QtGui.QPixmap
+    ):
+        _key = "b7dfdf88e34dc2fb2dea1945c4010f09"
 
-        m: str = soup.find(attrs={"class": "meal_list"}).text
-        m = '\n'.join(m.split())
+        owm = pyowm.OWM(_key)
 
-        label = QtWidgets.QLabel("\n\n●오늘의 급식:\n"+m)
+        weather = owm.weather_manager().weather_at_place("ChunCheon")
+
+        # status = str(weather.to_dict()["weather"]["status"])
+        temperature = (
+            float(weather.to_dict()["weather"]["temperature"]["temp"]) - 273.15
+        )
+        temperature = int(temperature)
+
+        web_icon = (
+            "http://openweathermap.org/img/wn/"
+            + weather.to_dict()["weather"]["weather_icon_name"]
+            + "@4x.png"
+        )
+        icon.loadFromData(urllib.request.urlopen(web_icon).read())
+        icon = icon.scaled(128, 128)
+
+        icon_label.setPixmap(icon)
+        # print(web_icon)
+        icon_label.setStyleSheet("color: white")
+
+        temp_label.setStyleSheet("color: white")
+        temp_label.setText(str(temperature) + "°C")
+
+    def meal(self) -> QtWidgets.QWidget:
+        label = QtWidgets.QLabel("\n\n●오늘의 급식:\n")
         label.setStyleSheet("font-size: 24px")
+        self.update_meal(label)
+
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(lambda: self.update_meal(label))
+        timer.start(60000)
 
         return label
+
+    @staticmethod
+    def update_meal(label):
+        html: bytes = urllib.request.urlopen("http://kanggo.net/main.do").read()
+        soup = BeautifulSoup(html.decode(), "lxml")
+
+        m: str = soup.find(attrs={"class": "meal_list"}).text
+        m = "\n".join(m.split())
+
+        label.setText("\n\n●오늘의 급식:\n" + m)
 
     @staticmethod
     def farm() -> QtWidgets.QWidget:
@@ -162,9 +197,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # TODO: Gather sensor values of smart farm via socket communication
         temp = QtWidgets.QLabel("온도: NaN°C")
+        humid = QtWidgets.QLabel("온도: NaN%")
 
         layout.addWidget(top_label)
         layout.addWidget(temp)
+        layout.addWidget(humid)
 
         p.setLayout(layout)
 

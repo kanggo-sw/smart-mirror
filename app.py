@@ -15,7 +15,7 @@ def bootstrap() -> int:
     return application_object.start()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(bootstrap())
 
 # Google assistant: https://pypi.org/project/google-assistant-sdk/
