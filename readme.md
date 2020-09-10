@@ -5,7 +5,7 @@
 
 ![](./r1.png)
 --------------------
-- 설치 후 아래와 같은 프로그램이 실행된다.
+- 설치 후 아래와 같은 프로그램을 실행한다.
 
 ![](./1.png)
 --------------------
@@ -37,10 +37,13 @@ network={
 - `reboot`명령을 입력해서 라즈베리파이를 재시작한다. 이제 연결한 USB 키보드를 뺀다. 재시작 후 폰트가 깨질 수 있는데 무시한다.
 - 재부팅 후 라즈베이파이 화면 우측 상단에 VNC 로고를 터치한다. Connectivity 탭에 IP 주소가 표시된다.
 ---------------------
-- PC 에서 VNC Viewer 를 실행해 17번에서 확인한 IP 주소를 아래 사진과 같이 입력하고 엔터를 누른다.
+- PC 에서 VNC Viewer 를 실행해 위에서 확인한 IP 주소를 아래 사진과 같이 입력하고 엔터를 누른다.
 ![](./2.png)
 - Continue 버튼을 클릭해 연결 후 아래 사진처럼 Username: `pi` Password: `raspberry` 를 입력하고 OK를 누른다.
 ![](./3.png)
+
+이제 PC에서 라즈베리파이를 조작할 수 있다.
+
 ----------------------
 - 라즈베리파이에서 아래 사진에 동그라미 친 부분을 클릭해 터미널을 연다.
 ![](./4.png)
@@ -80,8 +83,11 @@ network={
 
 - 아래 명령을 사용해 Card number, Device number 를 확인한다.
 `aplay -l` 명령으로 스피커, `arecord -l` 명령으로 마이크의 Card number, Device number 를 각각 확인한다.
+
 ![](./c1.png)
 ------------------
+![](./5.png)
+
 - 파일 매니저를 열고 우클릭해 New File 메뉴를 선택하고 `.asoundrc` 파일을 만든다.
 
 - 파일 매니저의 보기 메뉴에서 숨김 파일 표시 항목을 선택한다.
@@ -107,7 +113,7 @@ pcm.speaker {
 }
 ```
 
-- 저장 후 터미널에서 `reboot` 명령을 입력해 라즈베리 파이를 재시작한다.
+- 파일을 저장한 후 터미널에서 `reboot` 명령을 입력해 라즈베리 파이를 재시작한다.
 
 - 재부팅 후 터미널을 열어 `speaker-test -t wav` 명령으로 소리가 나는지 확인한다.
 소리 크기를 조절하려면 `alsamixer` 명령을 입력한 후 키보드의 화살표로 소리를 조절 후 `esc` 키를 눌러 완료한다.
@@ -128,12 +134,12 @@ pcm.speaker {
 
 ![](./g3.png)
 
-- 아래 그림처럼 설정하고 REGISTER MODEL 버튼을 누른다.
+- REGISTER MODEL 버튼을 누르면 나오는 팝업에서 아래 그림처럼 설정하고 REGISTER MODEL 버튼을 누른다.
 
 ![](./g4.png)
 
 
-- OAuth 증명 파일을 다운로드 후 Next 버튼을 누른다
+- OAuth 증명 파일을 다운로드 후 Next 버튼을 누른다. 다운로드한 파일 이름을 `credentials.json` 으로 변경한다. 나중에 라즈베리파이로 옮겨야 하니 잘 보관한다.
 
 ![](./g5.png)
 
@@ -155,14 +161,14 @@ pcm.speaker {
 
 - 좌측 드로잉 메뉴 클릭 후 API 및 서비스 -> OAuth 동의 화면 -> 외부 -> 만들기 -> 이메일 주소 설정 -> 하단에 있는 저장 버튼 클릭
 
-- 아까 다운로드한 파일 이름을 `credentials.json` 으로 변경한다. 나중에 라즈베리파이로 옮겨야 하니 잘 보관한다.
-
 # 구글 어시스턴트 모듈 설치
 - 터미널에서 다음 명령을 실행해 필요한 프로그램을 설치한다.
-`sudo apt-get install libmagic-dev libatlas-base-dev sox libsox-fmt-all mpg321 libasound2-dev -y`
+
+    `sudo apt-get install libmagic-dev libatlas-base-dev sox libsox-fmt-all mpg321 libasound2-dev -y`
 
 - 터미널에서 다음 명령으로 매직미러 모듈 폴더로 이동한다.
-`cd ~/MagicMirror/modules`
+
+    `cd ~/MagicMirror/modules`
 
 - 터미널에서 다음 명령을 실행해 구글 어시스턴트 모듈을 복제한다.
 `git clone https://github.com/bugsounet/MMM-GoogleAssistant`
@@ -170,13 +176,14 @@ pcm.speaker {
 - USB, Email 내게쓰기 등으로 `credentials.json` 파일을 라즈베리파이의 ~/MagicMirror/modules/MMM-GoogleAssistant 폴더에 넣는다.
 
 - 터미널에서 다음 명령으로 구글 어시스턴트 폴더로 이동한다.
-`cd ~/MagicMirror/modules/MMM-GoogleAssistant`
+
+    `cd ~/MagicMirror/modules/MMM-GoogleAssistant`
 
 - 터미널에서 다음 명령을 입력해 구글 어시스턴트 모듈을 설치한다.
 `npm install`
   - 설치 중 확인을 물을 경우 Y를 입력해 계속 진행한다.
 
-- 터미널에서 `node auth_and_test.js` 명령을 실행하고 구글 계정으로 로그인한 뒤 모든 권한을 허용하고 인증 코드를 복사해 터미널에 붙여넣는다. (우클릭->붙여넣기)
+- 터미널에서 `node auth_and_test.js` 명령을 실행하고 구글 계정으로 로그인한 뒤 모두 동의하고 인증 코드를 복사해 터미널에 붙여넣는다. (우클릭->붙여넣기)
 
 - 터미널에서 `Type your request` 가 나오면 `hi` 를 입력해보고 구글 어시스턴트가 반응하는지 확인한다. Ctrl+C 키를 눌러 종료한다.
 
