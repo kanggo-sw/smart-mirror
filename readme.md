@@ -246,3 +246,6 @@ cd ./MagicMirror
 DISPLAY=:0 npm start
 ```
 - 터미널에서 다음 명령을 입력한다: `chmod +x mm.sh`
+
+- 터미널에서 다음 명령을 입력해 스마트미러를 실행한다: `pm2 start mm.sh`
+- 키보드의 `Alt+Tab` 키를 눌러 터미널 창으로 전환하고 `pm2 save` 명령을 입력한다.
