@@ -233,3 +233,16 @@ API Keys 혹은 My API Keys 메뉴를 선택해 아래 화면으로 이동한다
 
 # 실행
 - 터미널에서 `cd ~/MagicMirror` 명령으로 매직미러 폴더로 이동한 뒤 `npm start` 명령을 입력하면 스마트미러 소프트웨어가 실행된다.
+
+# 부팅 후 자동으로 실행
+- 터미널에서 다음 명령을 순서대로 입력한다.
+1. `sudo npm install -g pm2`
+2. `pm2 startup`
+
+- home 경로에 `mm.sh` 파일을 만든다.
+- 아래 코드를 입력하고 저장한다.
+```
+cd ./MagicMirror
+DISPLAY=:0 npm start
+```
+- 터미널에서 다음 명령을 입력한다: `chmod +x mm.sh`
