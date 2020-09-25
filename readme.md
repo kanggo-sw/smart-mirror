@@ -186,12 +186,11 @@ pcm.speaker {
 
 # 구글 어시스턴트 모듈 변경사항
 **구글 어시스턴트 모듈이 금지되면서 정상적인 방법으로는 사용이 불가능해졌다. 이거대로만 따라하면 쓸 수 있다 그러니까 따라해라**
-- `~/MagicMirror/modules/MMM-GoogleAssistant` 경로로 이동한다.
-- `package.json` 파일을 연다.
+- 터미널에서 `geany ~/MagicMirror/modules/MMM-GoogleAssistant/package.json` 명령으로 파일을 연다.
 - 3번째 줄 `version`을 2.4.11에서 2.4.10 으로 바꾼다.
 - 30번째 줄 `MD5` 값을 `!!no-authorization!!` 을 지우고 `863b40e588d9ab346cae9f854c7e44a2` 로 바꾼다.
 
-- `~/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/md5/index.js` 파일을 연다.
+- 터미널에서 `geany ~/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/md5/index.js` 명령을 실행해 파일을 연다.
 - 원래 있던 코드를 모두 지우고 아래 코드를 입력한다.
 ```javascript
 const md5 = require("md5"),
