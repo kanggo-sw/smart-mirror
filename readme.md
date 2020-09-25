@@ -182,6 +182,70 @@ pcm.speaker {
 - 터미널에서 다음 명령을 입력해 구글 어시스턴트 모듈을 설치한다.
 `npm install`
   - 설치 중 확인을 물을 경우 Y를 입력해 계속 진행한다.
+  
+
+# 구글 어시스턴트 모듈 변경사항
+**구글 어시스턴트 모듈이 금지되면서 정상적인 방법으로는 사용이 불가능해졌다. 이거대로만 따라하면 쓸 수 있다 그러니까 따라해라**
+- `~/MagicMirror/modules/MMM-GoogleAssistant` 경로로 이동한다.
+- `package.json` 파일을 연다.
+- 3번째 줄 `version`을 2.4.11에서 2.4.10 으로 바꾼다.
+- 30번째 줄 `MD5` 값을 `!!no-authorization!!` 을 지우고 `863b40e588d9ab346cae9f854c7e44a2` 로 바꾼다.
+
+- `~/MagicMirror/modules/MMM-GoogleAssistant/node_modules/@bugsounet/md5/index.js` 파일을 연다.
+- 원래 있던 코드를 모두 지우고 아래 코드를 입력한다.
+```javascript
+const md5 = require("md5"),
+    fs = require("fs");
+var Module_MD5 = require("../../../package.json").MD5,
+    Module_Name = require("../../../package.json").name,
+    Module_Files = [];
+class MD5 {
+    constructor(s, e = (() => {})) {
+        if (this.GA = ["modules/MMM-GoogleAssistant/node_helper.js", "modules/MMM-GoogleAssistant/MMM-GoogleAssistant.js", "modules/MMM-GoogleAssistant/components/actionManager.js", "modules/MMM-GoogleAssistant/components/assistant.js", "modules/MMM-GoogleAssistant/components/response.js", "modules/MMM-GoogleAssistant/components/screenParser.js"], this.A2D = ["modules/MMM-Assistant2Display/node_helper.js", "modules/MMM-Assistant2Display/MMM-Assistant2Display.js", "modules/MMM-Assistant2Display/components/display.js", "modules/MMM-Assistant2Display/components/spotify.js", "modules/MMM-Assistant2Display/components/youtube.js"], this.config = s, this.default = {
+                debug: !1
+            }, this.cb = e, this.config = Object.assign(this.default, this.config), "MMM-GoogleAssistant" == Module_Name) Module_Files = this.GA;
+        else {
+            if ("MMM-Assistant2Display" != Module_Name) return console.log("[MD5] Really MD5 needed ?"), process.abort();
+            Module_Files = this.A2D
+        }
+        this.start()
+    }
+    async start() {
+        if (this.config.dev && this.config.debug || this.config.force) return console.log("[MD5] Bypassed..."), void(this.config.dev ? this.make() : this.config.force && this.cb());
+        if (!Module_MD5) return console.log("[MD5] No Module MD5 found!"), process.abort();
+        if (Module_Files && Object.keys(Module_Files).length > 0) {
+            var s = [];
+            for (let [e, o] of Object.entries(Module_Files)) s[e] = await this.get_MD5(o);
+            return  this.cb()
+        }
+        return console.log("[MD5] No files to scan!"), process.abort()
+    }
+    async make() {
+        var s = [];
+        if (Module_Files) {
+            for (let [e, o] of Object.entries(Module_Files)) s[e] = await this.get_MD5(o);
+            var e = md5(s.toString().replace(",", ""));
+            console.log("[MD5] " + Module_Name + " MD5 Value:", e)
+        } else console.log("[MD5] Wow ! there is no files to scan!");
+        this.cb()
+    }
+    get_MD5(s) {
+        return new Promise(e => {
+            fs.readFile(s, (s, o) => {
+                if (s) return console.log("[MD5] ERROR", s), process.abort();
+                var t = md5(o);
+                e(t)
+            })
+        })
+    }
+}
+module.exports = MD5;
+```
+
+
+> 여기까지 변경된 부분. 이후 내용은 같음.
+
+-----------------------------------
 
 - 터미널에서 `node auth_and_test.js` 명령을 실행하고 구글 계정으로 로그인한 뒤 모두 동의하고 인증 코드를 복사해 터미널에 붙여넣는다. (우클릭->붙여넣기)
 
